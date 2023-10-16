@@ -1,0 +1,5 @@
+# Logger
+logging.level:
+  web: DEBUG
+  '[com.bptn.weatherapp]': DEBUG
+  '[org.hibernate.type]': INFO

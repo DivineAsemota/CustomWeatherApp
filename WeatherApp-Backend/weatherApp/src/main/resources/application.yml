@@ -48,9 +48,9 @@ spring:
         
 # Database Settings
   datasource:
-    url: jdbc:postgresql://<academydb-c3-s1-t4-do-user-12484302-0.b.db.ondigitalocean.com>:<25060>/weatherDB
-    username: <doadmin>
-    password: <AVNS_CsLeU9GB-R7oVqCCckU>
+    url: jdbc:postgresql://academydb-c3-s1-t4-do-user-12484302-0.b.db.ondigitalocean.com:25060/weatherDB
+    username: doadmin
+    password: AVNS_CsLeU9GB-R7oVqCCckU
     hikari:
       maximum-pool-size: 2
   jpa:

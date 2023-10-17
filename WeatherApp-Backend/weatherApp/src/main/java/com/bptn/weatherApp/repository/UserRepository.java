@@ -9,6 +9,6 @@ import com.bptn.weatherApp.jpa.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findByUsername(String username);
 	
-	Optional<User> findEmailId(String email);
+	Optional<User> findByEmailId(String email);
 
 }

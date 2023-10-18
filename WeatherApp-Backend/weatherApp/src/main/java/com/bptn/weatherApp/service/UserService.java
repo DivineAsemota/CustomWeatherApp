@@ -71,6 +71,7 @@ public class UserService {
 
 		this.userRepository.save(user);
 	}
+
 	public void sendResetPasswordEmail(String emailId) {
 
 		Optional<User> opt = this.userRepository.findByEmailId(emailId);
@@ -81,4 +82,5 @@ public class UserService {
 			logger.debug("Email doesn't exist, {}", emailId);
 		}
 	}
+
 }

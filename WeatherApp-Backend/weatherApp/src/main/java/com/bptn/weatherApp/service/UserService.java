@@ -2,7 +2,7 @@ package com.bptn.weatherApp.service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +70,17 @@ public class UserService {
 		user.setEmailVerified(true);
 
 		this.userRepository.save(user);
+	}
+
+	public void sendResetPasswordEmail(String emailId) {
+
+		Optional<User> opt = this.userRepository.findByEmailId(emailId);
+
+		if (opt.isPresent()) {
+			this.emailService.sendResetPasswordEmail(opt.get());
+		} else {
+			logger.debug("Email doesn't exist, {}", emailId);
+		}
 	}
 
 }

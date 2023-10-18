@@ -18,21 +18,21 @@ import com.bptn.weatherApp.service.UserService;
 @RequestMapping("/user")
 public class UserController {
 	final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired 
+
+	@Autowired
 	UserService userService;
-	
+
 	@PostMapping("/signup")
-	public User signup(@RequestBody User user) {	
+	public User signup(@RequestBody User user) {
 		logger.debug("Signing up, username: {}", user.getUsername());
 		return this.userService.signup(user);
 	}
-	
+
 	@GetMapping("/verify/email")
-	 public void verifyEmail() {
-	   
-	  logger.debug("Verifying Email");
-	   
-	  this.userService.verifyEmail();
-	 }
+	public void verifyEmail() {
+
+		logger.debug("Verifying Email");
+
+		this.userService.verifyEmail();
+	}
 }

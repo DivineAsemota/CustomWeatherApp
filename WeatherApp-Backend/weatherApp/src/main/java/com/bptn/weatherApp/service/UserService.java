@@ -2,14 +2,16 @@ package com.bptn.weatherApp.service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bptn.weatherApp.exception.domain.EmailExistException;
+import com.bptn.weatherApp.exception.domain.UserNotFoundException;
 import com.bptn.weatherApp.exception.domain.UsernameExistException;
 import com.bptn.weatherApp.jpa.User;
 import com.bptn.weatherApp.repository.UserRepository;
@@ -58,4 +60,25 @@ public class UserService {
 		return user;
 	}
 
+	public void verifyEmail() {
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		User user = this.userRepository.findByUsername(username)
+				.orElseThrow(() -> new UserNotFoundException(String.format("Username doesn't exist, %s", username)));
+
+		user.setEmailVerified(true);
+
+		this.userRepository.save(user);
+	}
+	public void sendResetPasswordEmail(String emailId) {
+
+		Optional<User> opt = this.userRepository.findByEmailId(emailId);
+
+		if (opt.isPresent()) {
+			this.emailService.sendResetPasswordEmail(opt.get());
+		} else {
+			logger.debug("Email doesn't exist, {}", emailId);
+		}
+	}
 }

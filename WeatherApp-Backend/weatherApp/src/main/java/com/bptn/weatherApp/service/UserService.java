@@ -100,21 +100,21 @@ public class UserService {
 
 	private Authentication authenticate(String username, String password) {
 		return this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-	}
+		}
 
-	public User authenticate(User user) {
+		public User authenticate(User user) {
 
-		/* Spring Security Authentication. */
-		this.authenticate(user.getUsername(), user.getPassword());
+			/* Spring Security Authentication. */
+			this.authenticate(user.getUsername(), user.getPassword());
 
-		/* Get User from the DB. */
-		return this.userRepository.findByUsername(user.getUsername()).map(UserService::isEmailVerified).get();
-	}
+			/* Get User from the DB. */
+			return this.userRepository.findByUsername(user.getUsername()).map(UserService::isEmailVerified).get();
+		}
 
-	public HttpHeaders generateJwtHeader(String username) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(AUTHORIZATION, this.jwtService.generateJwtToken(username, this.provider.getJwtExpiration()));
+		public HttpHeaders generateJwtHeader(String username) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(AUTHORIZATION, this.jwtService.generateJwtToken(username, this.provider.getJwtExpiration()));
 
-		return headers;
-	}
+			return headers;
+		}
 }

@@ -11,7 +11,7 @@ management.endpoints:
 # Active Profile
 spring:
   profiles:
-    active: prod
+    active: default 
 
 # DevTools Enabled     
   devtools:

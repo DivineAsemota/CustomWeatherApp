@@ -1,5 +1,4 @@
 package com.bptn.weatherApp.service;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -84,6 +83,7 @@ public class UserService {
 			headers.add(AUTHORIZATION, this.jwtService.generateJwtToken(username, this.provider.getJwtExpiration()));
 			return headers;
 		}
+		
 		public void sendResetPasswordEmail(String emailId) {
 
 			Optional<User> opt = this.userRepository.findByEmailId(emailId);
@@ -95,14 +95,3 @@ public class UserService {
 			}
 		}
 }
-
-
-
-
-
-
-
-
-
-
-

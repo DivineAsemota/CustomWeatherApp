@@ -26,15 +26,9 @@ public class WeatherController {
 		// Log debug message with city and save values
 		logger.debug("Received request for city: {} with save option: {}", city, save);
 		Weather weather = weatherService.getWeather(city, save);
+
 		return weather;
 	}
-<<<<<<< HEAD
-	@GetMapping
-	public List<Weather> getWeather() {
-		logger.debug("Retrieving the weather list");
-		// Call the getWeathers() method of the WeatherService
-		List<Weather> weatherList = weatherService.getWeathers();
-=======
 
 	@GetMapping
 	public List<Weather> getWeatherList() {
@@ -43,7 +37,6 @@ public class WeatherController {
 		// Call the getWeathers() method of the WeatherService
 		List<Weather> weatherList = weatherService.getWeathers();
 
->>>>>>> 66eb9c0c66f1be1c629369987922cfb291a6c54c
 		return weatherList;
 	}
 }

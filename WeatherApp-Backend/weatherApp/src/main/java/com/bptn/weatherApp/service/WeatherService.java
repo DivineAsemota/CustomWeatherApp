@@ -147,5 +147,4 @@ public class WeatherService {
 
 		return weather;
 	}
-
 }

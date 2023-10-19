@@ -28,11 +28,22 @@ public class WeatherController {
 		Weather weather = weatherService.getWeather(city, save);
 		return weather;
 	}
+<<<<<<< HEAD
 	@GetMapping
 	public List<Weather> getWeather() {
 		logger.debug("Retrieving the weather list");
 		// Call the getWeathers() method of the WeatherService
 		List<Weather> weatherList = weatherService.getWeathers();
+=======
+
+	@GetMapping
+	public List<Weather> getWeatherList() {
+		logger.debug("Retrieving the weather list");
+
+		// Call the getWeathers() method of the WeatherService
+		List<Weather> weatherList = weatherService.getWeathers();
+
+>>>>>>> 66eb9c0c66f1be1c629369987922cfb291a6c54c
 		return weatherList;
 	}
 }

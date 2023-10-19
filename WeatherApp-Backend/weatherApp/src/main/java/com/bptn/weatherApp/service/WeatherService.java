@@ -1,7 +1,9 @@
 package com.bptn.weatherApp.service;
 
 import java.sql.Timestamp;
+import com.bptn.weatherApp.exception.domain.UserNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.bptn.weatherApp.jpa.User;
 @Service
 
 public class WeatherService {
@@ -146,5 +148,20 @@ public class WeatherService {
 		logger.debug("Weather: {}", weather);
 
 		return weather;
+		}
+		public List<Weather> getWeathers() {
+	        // Get the username of the currently authenticated user
+	        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+	        // Retrieve the User object for the authenticated user from the UserRepository
+	       User user = this.userRepository.findByUsername(username)
+			.orElseThrow(() -> new UserNotFoundException(String.format("Username doesn't exist, %s", username)));
+	         
+	        // Use the weatherRepository to retrieve the latest 10 weather data entries for the user
+	        List<Weather> weathers = weatherRepository.findFirst10ByUserOrderByWeatherIdDesc(user);
+
+	        return weathers;
+	    }
+	
 	}
-}
+

@@ -1,5 +1,6 @@
 package com.bptn.weatherApp.controller;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,15 @@ public class WeatherController {
 		Weather weather = weatherService.getWeather(city, save);
 
 		return weather;
+	}
+
+	@GetMapping
+	public List<Weather> getWeatherList() {
+		logger.debug("Retrieving the weather list");
+
+		// Call the getWeathers() method of the WeatherService
+		List<Weather> weatherList = weatherService.getWeathers();
+
+		return weatherList;
 	}
 }

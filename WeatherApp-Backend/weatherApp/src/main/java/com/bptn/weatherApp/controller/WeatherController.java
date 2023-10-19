@@ -9,28 +9,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.bptn.weatherApp.jpa.Weather;
 import com.bptn.weatherApp.service.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-
 @CrossOrigin
 @RestController
 @RequestMapping("/weathers")
 public class WeatherController {
-
 	final Logger logger = LoggerFactory.getLogger(WeatherController.class);
-
 	@Autowired
 	WeatherService weatherService;
-
 	@GetMapping("/{city}/{save}")
 	public Weather getWeather(@PathVariable String city, @PathVariable boolean save)
 			throws JsonMappingException, JsonProcessingException {
 		// Log debug message with city and save values
 		logger.debug("Received request for city: {} with save option: {}", city, save);
-
 		Weather weather = weatherService.getWeather(city, save);
 
 		return weather;

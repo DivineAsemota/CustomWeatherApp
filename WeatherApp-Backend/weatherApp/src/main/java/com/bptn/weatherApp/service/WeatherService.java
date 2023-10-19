@@ -32,18 +32,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 
 public class WeatherService {
-	
+
 	final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	WebClient webClient;
-		
+
 	@Autowired
 	ResourceProvider provider;
-	    
+
 	@Autowired
 	UserRepository userRepository;
-	        
+
 	@Autowired
 	CityRepository cityRepository;
 
@@ -52,30 +52,29 @@ public class WeatherService {
 
 	@Autowired
 	WeatherRepository weatherRepository;
-	
+
 	private String getUri(String city) {
 
-		Map<String, String> map = Map.of("q", city, 
-	                                      "units", "metric", 
-	                                     "appid", this.provider.getApiKey());
+		Map<String, String> map = Map.of("q", city, "units", "metric", "appid", this.provider.getApiKey());
 
-		return "?".concat(map.entrySet().stream().map(e -> String.format("%s=%s", e.getKey(), e.getValue())).collect(Collectors.joining("&")));
+		return "?".concat(map.entrySet().stream().map(e -> String.format("%s=%s", e.getKey(), e.getValue()))
+				.collect(Collectors.joining("&")));
 	}
-	
+
 	public String getWeatherFromApi(String city) {
 
 		return this.webClient.get().uri(this.getUri(city)).accept(MediaType.APPLICATION_JSON).retrieve()
-					.onStatus(status -> HttpStatus.NOT_FOUND.equals(status), response -> {
-						throw new CityNotFoundException(String.format("City doesn't exist, %s", city));
-					}).bodyToMono(String.class).block();
+				.onStatus(status -> HttpStatus.NOT_FOUND.equals(status), response -> {
+					throw new CityNotFoundException(String.format("City doesn't exist, %s", city));
+				}).bodyToMono(String.class).block();
 	}
-	
+
 	private Weather parseWeather(String username, String json) throws JsonMappingException, JsonProcessingException {
-		
+
 		JsonNode rootNode = new ObjectMapper().readTree(json);
 
 		Weather weather = new Weather();
-			
+
 		weather.setWeatherStatusId(rootNode.get("weather").get(0).get("id").asInt());
 		weather.setCloudsAll(rootNode.get("clouds").get("all").decimalValue());
 		weather.setDescription(rootNode.get("weather").get(0).get("description").asText());
@@ -83,8 +82,8 @@ public class WeatherService {
 		weather.setHumidity(rootNode.get("main").get("humidity").decimalValue());
 		weather.setIcon(rootNode.get("weather").get(0).get("icon").asText());
 		weather.setPressure(rootNode.get("main").get("pressure").decimalValue());
-		weather.setSunrise(new Timestamp(rootNode.get("sys").get("sunrise").asLong()*1000));
-		weather.setSunset(new Timestamp(rootNode.get("sys").get("sunset").asLong()*1000));
+		weather.setSunrise(new Timestamp(rootNode.get("sys").get("sunrise").asLong() * 1000));
+		weather.setSunset(new Timestamp(rootNode.get("sys").get("sunset").asLong() * 1000));
 		weather.setTemp(rootNode.get("main").get("temp").decimalValue());
 		weather.setTempMax(rootNode.get("main").get("temp_max").decimalValue());
 		weather.setTempMin(rootNode.get("main").get("temp_min").decimalValue());
@@ -92,45 +91,46 @@ public class WeatherService {
 		weather.setWindDirection(rootNode.get("wind").get("speed").decimalValue());
 		weather.setWindSpeed(rootNode.get("wind").get("deg").decimalValue());
 		weather.setUpdatedOn(new Timestamp(System.currentTimeMillis()));
-		
-		Optional<City> optCity =this.cityRepository.findByWeatherCityId(rootNode.get("id").asInt());
-			
+
+		Optional<City> optCity = this.cityRepository.findByWeatherCityId(rootNode.get("id").asInt());
+
 		if (optCity.isEmpty()) {
-				
+
 			City city = new City();
-				
+
 			city.setLatitude(rootNode.get("coord").get("lat").decimalValue());
 			city.setLongitude(rootNode.get("coord").get("lon").decimalValue());
 			city.setName(rootNode.get("name").asText());
 			city.setTimezone(rootNode.get("timezone").asText());
 			city.setWeatherCityId(rootNode.get("id").asInt());
-				
-			Optional<Country> optCountry = this.countryRepository.findByCountryCode(rootNode.get("sys").get("country").asText());
-				
+
+			Optional<Country> optCountry = this.countryRepository
+					.findByCountryCode(rootNode.get("sys").get("country").asText());
+
 			if (optCountry.isEmpty()) {
-					
+
 				Country country = new Country();
-				
+
 				country.setCountryCode(rootNode.get("sys").get("country").asText());
 				country.setCities(new ArrayList<>());
 				country.addCity(city);
-					
+
 				this.countryRepository.save(country);
 			} else {
-					
+
 				city.setCountry(optCountry.get());
-	            this.cityRepository.save(city);
+				this.cityRepository.save(city);
 			}
-							
+
 			optCity = Optional.of(city);
 		}
-			
-		weather.setCity(optCity.get());			
+
+		weather.setCity(optCity.get());
 		weather.setUser(this.userRepository.findByUsername(username).get());
-			
+
 		return weather;
 	}
-	
+
 	public Weather getWeather(String city, boolean save) throws JsonMappingException, JsonProcessingException {
 
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -147,4 +147,5 @@ public class WeatherService {
 
 		return weather;
 	}
+
 }

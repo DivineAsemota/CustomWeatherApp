@@ -24,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,16 +55,16 @@ public class UserControllerTest {
 
 	@Autowired
 	MockMvc mockMvc;
-	
+
 	@Autowired
 	ObjectMapper objectMapper;
-	
+
 	@Autowired
 	JwtService jwtService;
-	
+
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
@@ -104,10 +107,6 @@ public class UserControllerTest {
 		assertTrue(this.passwordEncoder.matches(this.user.getPassword(), opt.get().getPassword()));
 	}
 
-
-
-
-
 	@Test
 	@Order(2)
 	public void signupUsernameExistsIntegrationTest() throws Exception {
@@ -141,7 +140,7 @@ public class UserControllerTest {
 				.andExpect(jsonPath("$.reason", is("BAD REQUEST"))).andExpect(
 						jsonPath("$.message", is(String.format("Email already exists, %s", this.user.getEmailId()))));
 	}
-	
+
 	@Test
 	@Order(4)
 	public void verifyEmailIntegrationTest() throws Exception {
@@ -167,7 +166,7 @@ public class UserControllerTest {
 		assertEquals(true, opt.get().getEmailVerified());
 
 	}
-	
+
 	@Test
 	@Order(5)
 	public void verifyEmailUsernameNotFoundIntegrationTest() throws Exception {
@@ -186,6 +185,7 @@ public class UserControllerTest {
 				.andExpect(jsonPath("$.message", is(String.format("Username doesn't exist, %s", this.otherUsername))));
 
 	}
+
 	@Test
 	@Order(6)
 	public void loginIntegrationTest() throws Exception {
@@ -241,17 +241,45 @@ public class UserControllerTest {
 		assertTrue(opt.isPresent(), "User Should Exist");
 
 	}
-	
+
 	@Test
 	@Order(8)
 	public void resetPasswordEmailIntegrationTest() throws Exception {
-		
+
 		String emailId = "user@example.com";
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/reset/{email}", emailId))
-               .andExpect(status().isOk());
-		
-	} 
-	
+		mockMvc.perform(MockMvcRequestBuilders.get("/user/reset/{email}", emailId)).andExpect(status().isOk());
+
+	}
+
+	@Test
+
+	@Order(9)
+
+	public void resetPasswordIntegrationTest() throws Exception {
+
+		Optional<User> opt = this.userRepository.findByUsername(this.user.getUsername());
+
+		assertTrue(opt.isPresent(), "User Should Exist");
+
+		assertTrue(this.passwordEncoder.matches(this.user.getPassword(), opt.get().getPassword()));
+
+		String jwt = String.format("Bearer %s", this.jwtService.generateJwtToken(this.user.getUsername(), 10_000));
+
+		this.mockMvc
+
+				.perform(MockMvcRequestBuilders.post("/user/reset").param("password", otherPassword)
+
+						.header(AUTHORIZATION, jwt))
+
+				.andExpect(MockMvcResultMatchers.status().isOk());
+
+		opt = this.userRepository.findByUsername(this.user.getUsername());
+
+		assertTrue(opt.isPresent(), "User Should Exist");
+
+		assertTrue(this.passwordEncoder.matches(this.otherPassword, opt.get().getPassword()));
+
+	}
 
 }

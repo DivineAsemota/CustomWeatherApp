@@ -1,6 +1,7 @@
 package com.bptn.weatherApp.controller;
 
 import static org.hamcrest.CoreMatchers.is;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,7 +42,7 @@ import com.bptn.weatherApp.provider.ResourceProvider;
 import com.bptn.weatherApp.repository.WeatherRepository;
 import com.bptn.weatherApp.security.JwtService;
 import com.bptn.weatherApp.service.WeatherService;
-
+import static org.hamcrest.Matchers.hasSize;
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -184,6 +185,50 @@ public class WeatherControllerTest {
 	    	
 	    	/* Verify the Mocked method was called */
 	    	verify(this.weatherService).getWeatherFromApi(anyString());  	
+	}
+	@Test
+	@Order(3)
+	@Sql("/scripts/insert_weathers.txt") // The script will be executed using the system's timezone. 
+	public void getWeathersIntegrationTest() throws Exception {
+	    	
+	    	String jwt = String.format("Bearer %s", this.jwtService.generateJwtToken(this.username,10_000));	
+	             
+	        /* Check the Rest End Point Response */
+	        this.mockMvc.perform(MockMvcRequestBuilders.get("/weathers")
+	         	            .header(AUTHORIZATION,jwt))
+	         	         .andExpect(status().isOk())
+	                     .andExpect(jsonPath("$", hasSize(10)))
+	                     .andExpect(jsonPath("$.[9].weatherId", is(1))) // Validating row inserted in Test 1 
+	                     .andExpect(jsonPath("$.[9].cloudsAll", is(100.0)))
+	                     .andExpect(jsonPath("$.[9].description", is("snow")))
+	                     .andExpect(jsonPath("$.[9].feelsLike", is(-9.2)))
+	                     .andExpect(jsonPath("$.[9].humidity", is(90.0)))
+	                     .andExpect(jsonPath("$.[9].icon", is("13n")))
+	                     .andExpect(jsonPath("$.[9].pressure", is(1007.0)))
+	                     .andExpect(jsonPath("$.[9].sunrise", is("2023-01-13 07:49:10"))) // Hard-coded Date/Time in EST 
+	                     .andExpect(jsonPath("$.[9].sunset", is("2023-01-13 17:02:57")))  // Hard-coded Date/Time in EST 
+	                     .andExpect(jsonPath("$.[9].temp", is(-2.2)))
+	                     .andExpect(jsonPath("$.[9].tempMax", is(-1.34)))
+	                     .andExpect(jsonPath("$.[9].tempMin", is(-2.81)))
+	                     .andExpect(jsonPath("$.[9].visibility", is(2816.0)))
+	                     .andExpect(jsonPath("$.[9].weatherStatusId", is(601)))
+	                     .andExpect(jsonPath("$.[9].windDirection", is(10.29)))
+	                     .andExpect(jsonPath("$.[9].windSpeed", is(340.0)))
+	                     .andExpect(jsonPath("$.[9].city.cityId", is(1)))
+	                     .andExpect(jsonPath("$.[9].city.latitude", is(43.7001)))
+	                     .andExpect(jsonPath("$.[9].city.longitude", is(-79.4163)))
+	                     .andExpect(jsonPath("$.[9].city.name", is("Toronto")))
+	                     .andExpect(jsonPath("$.[9].city.timezone", is("-18000")))
+	                     .andExpect(jsonPath("$.[9].city.weatherCityId", is(6167865)))
+	                     .andExpect(jsonPath("$.[9].city.country.countryId", is(1)))
+	                     .andExpect(jsonPath("$.[9].city.country.countryCode", is("CA")));
+	        
+	        /* Check the DB */
+	        List<Weather> weathers = this.weatherRepository.findAll();
+	               
+	        /* 10 Records in the Weather DB table and the API returns max 10. */
+	        assertEquals(10,weathers.size());
+	        
 	}
 }
 

@@ -1,7 +1,7 @@
 package com.bptn.weatherApp.controller;
 
 import static org.hamcrest.CoreMatchers.is;
-import java.util.List;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.List;
 
 import org.h2.tools.Server;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +43,7 @@ import com.bptn.weatherApp.provider.ResourceProvider;
 import com.bptn.weatherApp.repository.WeatherRepository;
 import com.bptn.weatherApp.security.JwtService;
 import com.bptn.weatherApp.service.WeatherService;
-import static org.hamcrest.Matchers.hasSize;
+
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc

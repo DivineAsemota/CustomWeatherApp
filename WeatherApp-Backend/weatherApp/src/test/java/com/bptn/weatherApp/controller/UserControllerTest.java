@@ -242,5 +242,16 @@ public class UserControllerTest {
 
 	}
 	
+	@Test
+	@Order(8)
+	public void resetPasswordEmailIntegrationTest() throws Exception {
+		
+		String emailId = "user@example.com";
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/reset/{email}", emailId))
+               .andExpect(status().isOk());
+		
+	} 
+	
 
 }

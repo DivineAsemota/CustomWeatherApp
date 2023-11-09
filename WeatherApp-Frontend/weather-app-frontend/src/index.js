@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter as Router } from "react-router-dom";
 import AppContextProvider from "./Context/applicationContext";
 
@@ -12,6 +12,15 @@ root.render(
         <Router>
             <App />
         </Router>
+        <Toaster
+        toastOptions={{
+            duration: 5000, 
+            style:{
+                background: "#7e0bdb",
+                color: "#fff",
+            },
+        }}
+        />
     </AppContextProvider>
 );
 

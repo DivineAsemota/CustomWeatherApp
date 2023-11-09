@@ -9,12 +9,12 @@ const AppContextProvider = ({ children }) => {
 
     //set the userData(username and token) to cookies
     const setSession = (userData) => {
-        setCookies("userData", userData, {
+        setCookie("userData", userData, {
             path: "/",
             maxAge: 900, //15minutes
         });
 
-    }
+    };
 
     //get the userData (username and token) from cookies
     const getSession = () => {
@@ -25,7 +25,7 @@ const AppContextProvider = ({ children }) => {
 
     //remove the user data (user name and token) from the cookies
     const logout = () => {
-        removeCookies("userData", { path: "/" })
+        removeCookie("userData", { path: "/" })
 
     }
 

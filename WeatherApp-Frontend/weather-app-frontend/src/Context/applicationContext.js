@@ -14,7 +14,7 @@ const AppContextProvider = ({ children }) => {
             maxAge: 900, //15minutes
         });
 
-    }
+    };
 
     //get the userData (username and token) from cookies
     const getSession = () => {

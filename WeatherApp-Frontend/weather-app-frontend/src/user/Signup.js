@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 //Eye icon to display or hide password
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { signUpApi } from "../util/ApiUtil";
 
 import {
   FIRSTNAME_MIN_LENGTH,
@@ -25,9 +26,23 @@ const Signup = () => {
 
   const [open, setOpen] = useState(false);
 
-  const onFormSubmit = async (values) => {
-    console.log(values);
-    toast(`Congratulations on successufully signing up!!`);
+  const onFormSubmit = async (values, actions) => {
+    const apiResponse = await signUpApi(
+      values.firstName,
+      values.lastName,
+      values.username,
+      values.phone,
+      values.email,
+      values.password
+    );
+  
+    if (apiResponse.status === 1) {
+      toast.success(`Registration successful for ${values.email}`);
+      actions.resetForm();
+    } else {
+      toast.error(`Registration failed: ${apiResponse.payLoad}`);
+      actions.resetForm();
+    }
   };
 
   // handle toggle for Eye icon(password)

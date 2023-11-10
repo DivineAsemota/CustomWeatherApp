@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -6,21 +6,30 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 import { EMAIL_MAX_LENGTH } from "../common/constants";
+import { resetEmailLinkApi } from "../util/ApiUtil";
 
 const ResetEmailLink = () => {
+  const onFormSubmit = async (values, actions) => {
+    const apiResponse = await resetEmailLinkApi(values.email);
 
-  const onFormSubmit = async (values) => {
-    console.log(values) ;
-    toast("Email Id is displayed on console.log")
+    if (apiResponse.status === 1) {
+      toast(
+        "You will receive a password reset email, if user with that email exists"
+      );
+
+      actions.resetForm();
+    } else {
+      toast(apiResponse.payLoad);
+    }
   };
 
   //yup validations for all fields in the resetEmail page
   const ResetEmailSchema = Yup.object().shape({
     email: Yup.string()
-    .email("Looks like this is not an email")
-    .matches("[^@ ]+@[^@ ]+\\.[^@ ]+", "Email is not valid")
-    .max(EMAIL_MAX_LENGTH, "Email is too long")
-    .required("Email cannot be empty"),
+      .email("Looks like this is not an email")
+      .matches("[^@ ]+@[^@ ]+\\.[^@ ]+", "Email is not valid")
+      .max(EMAIL_MAX_LENGTH, "Email is too long")
+      .required("Email cannot be empty"),
   });
 
   return (
@@ -92,6 +101,6 @@ const ResetEmailLink = () => {
       </div>
     </Formik>
   );
-}
+};
 
-export default ResetEmailLink
+export default ResetEmailLink;

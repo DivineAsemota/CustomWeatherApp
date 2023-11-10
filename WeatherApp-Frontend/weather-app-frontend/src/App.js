@@ -18,6 +18,12 @@ const App = () => {
         element={<ResetPassword />}
       />
 
+      <Route
+        exact
+        path="/reset/:verificationToken"
+        element={<ResetPassword />}
+      />
+
       <Route exact path="/resetEmailLink" element={<ResetEmailLink />} />
       <Route
         exact

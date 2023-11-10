@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import BPTN from "../images/BPTN.png";
@@ -7,6 +7,10 @@ import { Link } from "react-router-dom";
 //Eye icon to display or hide password
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
+import { loginApi } from "../util/ApiUtil";
+import { AppContext } from "../Context/applicationContext";
+import { useNavigate } from "react-router-dom";
+
 import {
     USERNAME_MIN_LENGTH,
     USERNAME_MAX_LENGTH,
@@ -14,13 +18,29 @@ import {
     PASSWORD_MAX_LENGTH,
 } from "../common/constants";
 
+
+
 const Login = () => {
+
+    let navigate = useNavigate(); //useNavigate hook which helps us to redirect to the respective route
+    const appContext = useContext(AppContext); //useContext hook which helps to make use of AppContext
 
     const [open, setOpen] = useState(false);
 
-    const onFormSubmit = async (values) => {
-        console.log(values);
-        toast("Login successful.Check console.log for values");
+    const onFormSubmit = async (values, actions) => {
+        //call the loginApi and pass the field values
+        const apiResponse = await loginApi(values.username, values.password);
+        const payLoad = apiResponse.payLoad;
+    
+        if (apiResponse.status === 1) {
+    
+            appContext.setSession(payLoad);  //storing the token and username into cookies
+            console.log(payLoad);
+            toast("Login successful");
+        } else {
+           actions.resetForm(); // reset form
+           toast(apiResponse.payLoad);
+        }
     };
 
     // handle toggle for Eye icon

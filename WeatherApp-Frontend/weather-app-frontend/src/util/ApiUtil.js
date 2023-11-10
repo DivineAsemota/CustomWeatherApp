@@ -108,4 +108,25 @@ export const resetEmailLinkApi = async (email) => {
   }
 };
 
+export const resetPasswordApi = async (token, password) => {
+  let response = frameResponse();
+  try {
+    const url = `${API_BASE_URL}/user/reset?password=${password}`
+    const headers = { headers: { Authorization: frameToken(token) } };
+    const apiResponse = await axios.post(url, null, headers);
+
+    if (apiResponse.status === 200){
+      response = frameResponse(1);
+    }
+  } catch (err) {
+    if (err.response) {
+      response = frameResponse(0, err.response.data.message);
+    }
+    console.log(err);
+  } finally {
+    return response;
+  }
+  }
+
+
 export { frameToken, frameResponse, signUpApi };

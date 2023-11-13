@@ -174,7 +174,7 @@ const Login = () => {
                             className="flex items-center justify-center w-full p-2 space-x-4 border rounded-md focus:ring-2 focus:ring-offset-1 dark:border-gray-400 focus:ring-violet-400"
                         >
                             <p>Powered by</p>
-                            <img className="w-20 h-10" src={BPTN} />
+                            <alt prop img className="w-20 h-10" src={BPTN} />
                         </div>
                     </div>
                 </div>

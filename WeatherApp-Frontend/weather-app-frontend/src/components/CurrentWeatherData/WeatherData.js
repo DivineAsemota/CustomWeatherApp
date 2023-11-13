@@ -4,6 +4,7 @@ import LoadingIndicator from "../LoadingIndicator/LoadingIndicator"
 import DisplayWeatherData from "./DisplayWeatherData";
 import { getWeatherDataApi } from "../../util/ApiUtil"
 import { toast } from "react-hot-toast";
+import TokenExpirationPage from "../TokenExpirationPage/TokenExpirationPage";
 
 const WeatherData = ({currentUser}) => {
     const [data, setData] = useState(null);
@@ -63,6 +64,10 @@ const WeatherData = ({currentUser}) => {
         }, 3000);
         return () => clearTimeout(timer);
     }, [errorMsg]);
+
+    if (tokenExpired){
+      return <TokenExpirationPage />;
+  }
 
     if (!data){
         return (

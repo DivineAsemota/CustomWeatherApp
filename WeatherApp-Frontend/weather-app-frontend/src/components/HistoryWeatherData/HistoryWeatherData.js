@@ -3,8 +3,7 @@ import { getHistoryWeatherDataApi } from "../../util/ApiUtil";
 import DisplayWeatherData from "../CurrentWeatherData/DisplayWeatherData";
 import NoHistoryWeatherPresent from "./NoHistoryWeatherPresent";
 import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
-
-
+import TokenExpirationPage from "../TokenExpirationPage/TokenExpirationPage";
 
 const HistoryWeatherData = ({ currentUser }) => {
 
@@ -43,7 +42,9 @@ const HistoryWeatherData = ({ currentUser }) => {
         getMyResults();
     }, []);
 
-    
+    if (tokenExpired){
+        return <TokenExpirationPage />;
+    }
 
     //show the loading indicator if the data is being loaded
     if (loading) {

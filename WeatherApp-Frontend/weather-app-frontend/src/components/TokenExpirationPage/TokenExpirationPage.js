@@ -1,4 +1,6 @@
-const TockenExpirationPage = () => {
+import React from 'react'
+
+const TokenExpirationPage = () => {
     return (
         <div class="flex items-center justify-center min-h-screen p-5 min-w-screen">
           <div class="max-w-xl p-8 text-center text-purple-800 bg-gray-100 shadow-xl lg:max-w-3xl rounded-3xl lg:p-12">

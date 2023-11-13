@@ -1,9 +1,11 @@
 import React from 'react';
 
+import NoHistoryWeatherPresent from './NoHistoryWeatherPresent'
+
 const HistoryWeatherData = () => {
     return (
         <div>
-            History Weather Data
+            <NoHistoryWeatherPresent/>
         </div>
     )
 }

@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { AppContext, AppContext } from "../../Context/applicationContext"
+import { AppContext } from "../../Context/applicationContext"
 
 const Header = (props) => {
-    const AppContext = useContext(AppContext);
+    const appContext = useContext(AppContext);
     const [showMenu, setShowMenu] = useState(false);
 
     const logout = () => {
